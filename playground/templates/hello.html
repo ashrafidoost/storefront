@@ -5,13 +5,18 @@
         <h1>
             Hello
             {% if name %}
-            <h2>{{ name }}</h2>
+            <i>{{ name }}</i>
             {% else %}
             World
             {% endif %}
             !
         </h1>
     </center>
+    <ul>
+        {% for product in products %}
+        <li>{{ product.title }} ------------ {{ product.unit_price }} ------------ {{ product.last_update }}</li>
+        {% endfor %}
+    </ul>
 </body>
 
 </html>
