@@ -12,9 +12,14 @@
             !
         </h1>
     </center>
+
+    <h1>
+        {{ product }}
+    </h1>
+
     <ul>
         {% for product in products %}
-        <li>{{ product.title }} ------------ {{ product.unit_price }} ------------ {{ product.last_update }}</li>
+        <li>{{ product.customer.first_name }} - {{ product.customer.last_name }}</li>
         {% endfor %}
     </ul>
 </body>
