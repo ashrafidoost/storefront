@@ -18,6 +18,10 @@ import debug_toolbar
 from django.contrib import admin
 from django.urls import path, include
 
+admin.AdminSite.site_header = 'Store Front Admin'
+admin.AdminSite.site_title = 'Admin'
+admin.AdminSite.index_title = 'Admin'
+
 urlpatterns = [    
     path("admin/", admin.site.urls),
     path("", include("playground.urls")),

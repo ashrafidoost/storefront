@@ -5,12 +5,17 @@ from django.db.models import Q, F, Func
 from django.db.models.functions import Concat
 from django.db.models import Avg, Max, Min, Count, Sum
 from django.db.models import Value, ExpressionWrapper, DecimalField
-from store.models import Product, OrderItem, Customer, Order
+from django.db import transaction
+from django.contrib.contenttypes.models import ContentType 
+
+from store.models import Product, OrderItem, Customer, Order, Collection
+from tags.models import TaggedItem
 
 # Create your views here.
 #----------------------------- VIEWS (Mosh)
 # Request -> Response
 # Other jargons for Views : Request Handler, Action
+
 
 def first_page(request):
     return HttpResponse('This is the first page of the Store Front')
@@ -28,10 +33,38 @@ def say_hello(request):
     #query_set = Customer.objects.annotate(FullName=Concat('first_name', Value(' '), 'last_name'))
     #query_set = Customer.objects.annotate(orders_count=Count('order'))
 
-    discounted_price = ExpressionWrapper(F('unit_price')*0.8, output_field=DecimalField(max_digits=10, decimal_places=2))
-    query_set = Product.objects.annotate(discounted_price = discounted_price)
+    #discounted_price = ExpressionWrapper(F('unit_price')*0.8, output_field=DecimalField(max_digits=10, decimal_places=2))
+    #query_set = Product.objects.annotate(discounted_price = discounted_price)
 
+    #### INSERT DB ### Option 1:
+    # collection = Collection.objects.get(pk=11)
+    # collection.title = 'Physical Games'
+    # collection.featured_product = None
+    # collection.save()
+    #### INSERT DB ### Option 2: 
+    # Collection.objects.filter(pk=5).update(featured_product=6)
+
+    #### DEL from DB ### Option 1:
+    # collection = Product.objects.get(pk=5)
+    # collection.delete()
+
+    #### DEL from DB ### Option 2:
+    # Collection.objects.filter(pk__gt=10).delete()
+
+    # with transaction.atomic():
+    #     order = Order()
+    #     order.customer_id = 1
+    #     order.save()
+
+    #     item = OrderItem()
+    #     item.order = order
+    #     item.product_id = 1
+    #     item.quantity = 1
+    #     item.unit_price = 10
+    #     item.save()
+
+    query_set = Product.objects.raw('SELECT * FROM store_product WHERE id > 150')
 
     #print(query_set)
 
-    return render(request, 'hello.html', {'name': 'Reza', 'products': query_set})
+    return render(request, 'hello.html', {'name': 'Reza', query_set: list(query_set)})
